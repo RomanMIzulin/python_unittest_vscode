@@ -40,6 +40,7 @@ import lsp_jsonrpc as jsonrpc
 import lsp_utils as utils
 import lsprotocol.types as lsp
 from pygls import server, uris, workspace
+import ast
 
 WORKSPACE_SETTINGS = {}
 GLOBAL_SETTINGS = {}
@@ -75,6 +76,32 @@ TOOL_DISPLAY = "unittest generator"
 TOOL_ARGS = []  # default arguments always passed to your tool.
 
 
+# **********************************************************
+# Extension part
+# **********************************************************
+
+@LSP_SERVER.feature(lsp.TEXT_DOCUMENT_RANGE_FORMATTING)
+def range_formatting(params: lsp.DocumentFormattingParams) -> list[lsp.TextEdit] | None:
+    """LSP handler for textDocument/formatting request."""
+
+    log_warning("Black does not support range formatting. Formatting entire document.")
+    document = LSP_SERVER.workspace.get_text_document(params.text_document.uri)
+    # TODO: process code from document here.
+    return 
+
+def is_python(code: str) -> bool:
+    """Ensures that the code provided is python."""
+    try:
+        ast.parse(code)
+    except SyntaxError:
+        log_error(f"Syntax error in code: {traceback.format_exc()}")
+        return False
+    return True
+
+# **********************************************************
+# Extension part end
+# **********************************************************
+
 
 # **********************************************************
 # Required Language Server Initialization and Exit handlers.
@@ -97,6 +124,7 @@ def initialize(params: lsp.InitializeParams) -> None:
     log_to_output(
         f"Global settings:\r\n{json.dumps(GLOBAL_SETTINGS, indent=4, ensure_ascii=False)}\r\n"
     )
+
 
 
 @LSP_SERVER.feature(lsp.EXIT)
@@ -204,6 +232,10 @@ def _run_tool_on_document(
     if str(document.uri).startswith("vscode-notebook-cell"):
         # TODO: Decide on if you want to skip notebook cells.
         # Skip notebook cells
+        return None
+    
+    if not is_python(document.source):
+        log_warning(f"Skipping non python code: {document.path}")
         return None
 
     if utils.is_stdlib_file(document.path):
