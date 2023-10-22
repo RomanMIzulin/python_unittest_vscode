@@ -33,6 +33,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         const level = getLSClientTraceLevel(c, g);
         await lsClient?.setTrace(level);
     };
+    let a = context.workspaceState
+    let disposable = vscode.commands.registerCommand('unittest_generator.helloWorld', () => {
+        vscode.window.showInformationMessage('Hello World!'+JSON.stringify(a));
+    });
 
     context.subscriptions.push(
         outputChannel.onDidChangeLogLevel(async (e) => {
@@ -41,6 +45,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         vscode.env.onDidChangeLogLevel(async (e) => {
             await changeLogLevel(outputChannel.logLevel, e);
         }),
+        disposable,
     );
 
     // Log Server information

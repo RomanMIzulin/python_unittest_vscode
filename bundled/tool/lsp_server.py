@@ -14,6 +14,7 @@ import traceback
 from typing import Any, Optional, Sequence
 
 
+
 # **********************************************************
 # Update sys.path before importing any bundled libraries.
 # **********************************************************
@@ -46,8 +47,7 @@ WORKSPACE_SETTINGS = {}
 GLOBAL_SETTINGS = {}
 RUNNER = pathlib.Path(__file__).parent / "lsp_runner.py"
 
-MAX_WORKERS = 5
-# TODO: Update the language server name and version.
+MAX_WORKERS = 2
 LSP_SERVER = server.LanguageServer(
     name="unittest_generator", version="0.1", max_workers=MAX_WORKERS
 )
@@ -79,6 +79,12 @@ TOOL_ARGS = []  # default arguments always passed to your tool.
 # **********************************************************
 # Extension part
 # **********************************************************
+@LSP_SERVER.command("unittest_generator.run")
+def generate_test_template(params: lsp.ExecuteCommandParams) -> None:
+    # need somehow to get doc or line with function with custom command 
+    params.arguments
+    document = LSP_SERVER.workspace.get_document()
+    lsp.workspaceO
 
 @LSP_SERVER.feature(lsp.TEXT_DOCUMENT_RANGE_FORMATTING)
 def range_formatting(params: lsp.DocumentFormattingParams) -> list[lsp.TextEdit] | None:

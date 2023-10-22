@@ -129,6 +129,11 @@
                 "title": "Restart Server",
                 "category": "unittest_generator",
                 "command": "unittest_generator.restart"
+            },
+            {
+                "title": "Hello world",
+                "category": "unittest_generator",
+                "command": "unittest_generator.helloWorld"
             }
         ]
     },

@@ -1,3 +1,6 @@
+- How to proxy args from client to LSP for custom command?
+- How to get related text on which custom command was triggered?
+
 # Template for VS Code python tools extensions
 
 This is a template repository to get you started on building a VS Code extension for your favorite python tool. It could be a linter, formatter, or code analysis, or all of those together. This template will give you the basic building blocks you need to build a VS Code extension for it.
