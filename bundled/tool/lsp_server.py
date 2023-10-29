@@ -42,6 +42,7 @@ import lsp_utils as utils
 import lsprotocol.types as lsp
 from pygls import server, uris, workspace
 import ast
+import python_unit_generator as pug
 
 WORKSPACE_SETTINGS = {}
 GLOBAL_SETTINGS = {}
@@ -79,12 +80,14 @@ TOOL_ARGS = []  # default arguments always passed to your tool.
 # **********************************************************
 # Extension part
 # **********************************************************
-@LSP_SERVER.command("unittest_generator.run")
+@LSP_SERVER.feature('gen_back')
 def generate_test_template(params: lsp.ExecuteCommandParams) -> None:
     # need somehow to get doc or line with function with custom command 
-    params.arguments
-    document = LSP_SERVER.workspace.get_document()
-    lsp.workspaceO
+    params
+
+    LSP_SERVER.send_notification(json.dumps(params))
+    document = LSP_SERVER.workspace.get_document(params.uri)
+    
 
 @LSP_SERVER.feature(lsp.TEXT_DOCUMENT_RANGE_FORMATTING)
 def range_formatting(params: lsp.DocumentFormattingParams) -> list[lsp.TextEdit] | None:

@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import * as vscode from 'vscode';
-import { LanguageClient } from 'vscode-languageclient/node';
+import { LanguageClient, RequestType } from 'vscode-languageclient/node';
 import { registerLogger, traceError, traceLog, traceVerbose } from './common/log/logging';
 import {
     checkVersion,
@@ -17,6 +17,15 @@ import { loadServerDefaults } from './common/setup';
 import { getLSClientTraceLevel } from './common/utilities';
 import { createOutputChannel, onDidChangeConfiguration, registerCommand } from './common/vscodeapi';
 
+interface ReadFileParams {
+    uri: string;
+    lineNumber: number;
+}
+
+namespace GenTestRequest {
+    export const type = new RequestType<ReadFileParams, string, void>('gen_back');
+}
+
 let lsClient: LanguageClient | undefined;
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     // This is required to get server name and module. This should be
@@ -28,14 +37,41 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     // Setup logging
     const outputChannel = createOutputChannel(serverName);
     context.subscriptions.push(outputChannel, registerLogger(outputChannel));
+    // let uri: vscode.Uri | undefined = vscode.window.activeTextEditor?.document.uri;
+    // Get the active text editor
+    const editor = vscode.window.activeTextEditor;
+    let uri: vscode.Uri | undefined;
+    let lineNumber: number | undefined;
+    // Check if there is an active text editor
+    if (editor) {
+        // Get the current cursor position
+        const position = editor.selection.active;
 
+        // Set the line number of the current cursor position to the lineNumber variable
+        lineNumber = position.line;
+        // Get the URI of the current document
+        uri = editor.document.uri;
+
+        // Log the URI and line number
+        console.log(`URI: ${uri.toString()}, Line Number: ${lineNumber}`);
+    }
     const changeLogLevel = async (c: vscode.LogLevel, g: vscode.LogLevel) => {
         const level = getLSClientTraceLevel(c, g);
         await lsClient?.setTrace(level);
     };
-    let a = context.workspaceState
+
     let disposable = vscode.commands.registerCommand('unittest_generator.helloWorld', () => {
-        vscode.window.showInformationMessage('Hello World!'+JSON.stringify(a));
+        let webviewPanel = vscode.window.createWebviewPanel('wtf', 'wtf', vscode.ViewColumn.One);
+        webviewPanel.webview.html = '<h1>hello</h1>';
+        // webviewPanel.reveal(vscode.ViewColumn.One);
+    });
+
+    let genCommand = vscode.commands.registerCommand('unittest_generator.gen', async () => {
+        let resp = await lsClient?.sendRequest(GenTestRequest.type, {
+            uri: lsClient.code2ProtocolConverter.asUri(uri),
+            lineNumber: lineNumber,
+        });
+        traceLog(resp);
     });
 
     context.subscriptions.push(
@@ -46,6 +82,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             await changeLogLevel(outputChannel.logLevel, e);
         }),
         disposable,
+        genCommand,
     );
 
     // Log Server information

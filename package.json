@@ -134,6 +134,11 @@
                 "title": "Hello world",
                 "category": "unittest_generator",
                 "command": "unittest_generator.helloWorld"
+            },
+            {
+                "title": "generate tests",
+                "category": "unittest_generator",
+                "command": "unittest_generator.gen"
             }
         ]
     },
