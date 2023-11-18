@@ -42,7 +42,8 @@ import lsp_utils as utils
 import lsprotocol.types as lsp
 from pygls import server, uris, workspace
 import ast
-import python_unit_generator as pug
+import unit_gen
+import importlib
 
 WORKSPACE_SETTINGS = {}
 GLOBAL_SETTINGS = {}
@@ -86,8 +87,35 @@ def generate_test_template(params: lsp.ExecuteCommandParams) -> None:
     params
 
     LSP_SERVER.send_notification(json.dumps(params))
-    document = LSP_SERVER.workspace.get_document(params.uri)
-    
+    document: workspace.Document = LSP_SERVER.workspace.get_document(params.uri)
+    # Assuming `doc` is a workspace.Document object
+    file_path = document.uri  # replace with actual method to get file path
+    line_number = params.lineNumber  # idk why it works
+    # Convert file path to module path
+    with open(file_path, 'r') as file:
+        module = ast.parse(file.read())
+
+    # Find the function definition at the specific line number
+    function_def = None
+    for node in module.body:
+        if isinstance(node, ast.FunctionDef) and node.lineno == line_number:
+            function_def = node
+            break
+
+    if function_def is None:
+        print(f"No function definition found at line {line_number}")
+    else:
+        # Compile the function definition
+        code = compile(ast.Module(body=[function_def]), filename='<ast>', mode='exec')
+        namespace = {}
+        exec(code, namespace)
+
+        # Now you have the function as a callable Python object
+        my_function = namespace['my_function']
+
+
+    # gen python object from file - callable func
+    res = unit_gen.generate_test_case()
 
 @LSP_SERVER.feature(lsp.TEXT_DOCUMENT_RANGE_FORMATTING)
 def range_formatting(params: lsp.DocumentFormattingParams) -> list[lsp.TextEdit] | None:

@@ -10,9 +10,9 @@ attrs==23.1.0 \
     # via
     #   cattrs
     #   lsprotocol
-cattrs==23.1.2 \
-    --hash=sha256:b2bb14311ac17bed0d58785e5a60f022e5431aca3932e3fc5cc8ed8639de50a4 \
-    --hash=sha256:db1c821b8c537382b2c7c66678c3790091ca0275ac486c76f3c8f3920e83c657
+cattrs==23.2.1 \
+    --hash=sha256:c505344019b1a2708c775ffb1b8d092654d22a570799bb7b925c9effefc22703 \
+    --hash=sha256:c9685821a75dc8588b90e847f47bcb6fba7bce8f280d5dc4edd3290e827854ec
     # via lsprotocol
 lsprotocol==2023.0.0b1 \
     --hash=sha256:ade2cd0fa0ede7965698cb59cd05d3adbd19178fd73e83f72ef57a032fbb9d62 \
@@ -22,15 +22,19 @@ packaging==23.2 \
     --hash=sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5 \
     --hash=sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7
     # via -r ./requirements.in
-pygls==1.0.2 \
-    --hash=sha256:6d278d29fa6559b0f7a448263c85cb64ec6e9369548b02f1a7944060848b21f9 \
-    --hash=sha256:888ed63d1f650b4fc64d603d73d37545386ec533c0caac921aed80f80ea946a4
+pygls==1.1.2 \
+    --hash=sha256:783d29c93679bb6756772f2de9b9f53b1a6fdf3fba66aeca23e87aa8aab20ecf \
+    --hash=sha256:93fe17c01fd03307774290e685e7fa25bc1411cd72f243ff33eef21927fd0ad5
     # via -r ./requirements.in
 python-unit-generator==0.0.1 \
     --hash=sha256:0f408b02c41b6169a450e363fddec05a90b7c4e921eb3de6d4a60d7a2de288d4 \
     --hash=sha256:4c21b104380210ac0989828eab19c772f6bd785ca161369c9d921ffec025b35a
     # via -r ./requirements.in
-typeguard==3.0.2 \
-    --hash=sha256:bbe993854385284ab42fd5bd3bee6f6556577ce8b50696d6cb956d704f286c8e \
-    --hash=sha256:fee5297fdb28f8e9efcb8142b5ee219e02375509cd77ea9d270b5af826358d5a
+typeguard==4.1.5 \
+    --hash=sha256:8923e55f8873caec136c892c3bed1f676eae7be57cdb94819281b3d3bc9c0953 \
+    --hash=sha256:ea0a113bbc111bcffc90789ebb215625c963411f7096a7e9062d4e4630c155fd
     # via pygls
+typing-extensions==4.8.0 \
+    --hash=sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0 \
+    --hash=sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef
+    # via typeguard
