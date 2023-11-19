@@ -82,7 +82,7 @@ TOOL_ARGS = []  # default arguments always passed to your tool.
 # Extension part
 # **********************************************************
 @LSP_SERVER.feature('gen_back')
-def generate_test_template(params: lsp.ExecuteCommandParams) -> None:
+def generate_test_template(params: lsp.ExecuteCommandParams) -> None | str:
     # need somehow to get doc or line with function with custom command 
     params
 
@@ -92,30 +92,36 @@ def generate_test_template(params: lsp.ExecuteCommandParams) -> None:
     file_path = document.uri  # replace with actual method to get file path
     line_number = params.lineNumber  # idk why it works
     # Convert file path to module path
-    with open(file_path, 'r') as file:
+    with open(file_path.replace('file://',''), 'r') as file:
         module = ast.parse(file.read())
 
     # Find the function definition at the specific line number
     function_def = None
     for node in module.body:
-        if isinstance(node, ast.FunctionDef) and node.lineno == line_number:
+        if isinstance(node, ast.FunctionDef) and node.lineno == line_number+1:
             function_def = node
             break
 
     if function_def is None:
-        print(f"No function definition found at line {line_number}")
+        msg = (f"No function definition found at line {line_number}")
+        log_error(msg)
+        LSP_SERVER.send_notification(msg)
+        return
     else:
         # Compile the function definition
-        code = compile(ast.Module(body=[function_def]), filename='<ast>', mode='exec')
+        code = compile(ast.Module(body=[function_def], type_ignores=[]) , filename='<ast>', mode='exec')
         namespace = {}
         exec(code, namespace)
 
         # Now you have the function as a callable Python object
-        my_function = namespace['my_function']
+        target_func = namespace[function_def.name]
 
+    
 
     # gen python object from file - callable func
-    res = unit_gen.generate_test_case()
+    res = unit_gen.generate_test_case(target_func)
+    return res
+    
 
 @LSP_SERVER.feature(lsp.TEXT_DOCUMENT_RANGE_FORMATTING)
 def range_formatting(params: lsp.DocumentFormattingParams) -> list[lsp.TextEdit] | None:

@@ -67,11 +67,20 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     });
 
     let genCommand = vscode.commands.registerCommand('unittest_generator.gen', async () => {
+        if (uri === undefined) {
+            vscode.window.showErrorMessage('No active text editor');
+            return;
+        }
         let resp = await lsClient?.sendRequest(GenTestRequest.type, {
             uri: lsClient.code2ProtocolConverter.asUri(uri),
             lineNumber: lineNumber,
         });
         traceLog(resp);
+        // Create a new untitled document
+        const doc = await vscode.workspace.openTextDocument({ language: 'python', content: resp });
+
+        // Open the document in a new tab
+        await vscode.window.showTextDocument(doc, { preview: false });
     });
 
     context.subscriptions.push(
