@@ -21,15 +21,15 @@ lsprotocol==2023.0.0b1 \
 packaging==23.2 \
     --hash=sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5 \
     --hash=sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7
-    # via -r ./requirements.in
+    # via -r requirements.in
 pygls==1.1.2 \
     --hash=sha256:783d29c93679bb6756772f2de9b9f53b1a6fdf3fba66aeca23e87aa8aab20ecf \
     --hash=sha256:93fe17c01fd03307774290e685e7fa25bc1411cd72f243ff33eef21927fd0ad5
-    # via -r ./requirements.in
-python-unit-generator==0.0.1 \
-    --hash=sha256:0f408b02c41b6169a450e363fddec05a90b7c4e921eb3de6d4a60d7a2de288d4 \
-    --hash=sha256:4c21b104380210ac0989828eab19c772f6bd785ca161369c9d921ffec025b35a
-    # via -r ./requirements.in
+    # via -r requirements.in
+python-unit-generator==0.0.2 \
+    --hash=sha256:2a0f8a4061168bae01242667df6c295c19cac7a079e1c23fd6f5a8bdd9bca5da \
+    --hash=sha256:a47eae72b86936ece2673d72072e365edeef65b396cdd68f7cecd7978cb626f2
+    # via -r requirements.in
 typeguard==4.1.5 \
     --hash=sha256:8923e55f8873caec136c892c3bed1f676eae7be57cdb94819281b3d3bc9c0953 \
     --hash=sha256:ea0a113bbc111bcffc90789ebb215625c963411f7096a7e9062d4e4630c155fd
