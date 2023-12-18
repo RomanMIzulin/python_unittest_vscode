@@ -20,6 +20,7 @@ import { createOutputChannel, onDidChangeConfiguration, registerCommand } from '
 interface ReadFileParams {
     uri: string;
     lineNumber: number;
+    isPytest: boolean;
 }
 
 namespace GenTestRequest {
@@ -39,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(outputChannel, registerLogger(outputChannel));
     // let uri: vscode.Uri | undefined = vscode.window.activeTextEditor?.document.uri;
     // Get the active text editor
-    const editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.activeTextEditor;
     let uri: vscode.Uri | undefined;
     let lineNumber: number | undefined;
     // Check if there is an active text editor
@@ -67,6 +68,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     });
 
     let genCommand = vscode.commands.registerCommand('unittest_generator.gen', async () => {
+        const editor = vscode.window.activeTextEditor;
+        const position = editor?.selection.active;
+
+        // Set the line number of the current cursor position to the lineNumber variable
+        lineNumber = position?.line;
+        // Get the URI of the current document
+        uri = editor?.document.uri;
         if (uri === undefined) {
             vscode.window.showErrorMessage('No active text editor');
             return;
@@ -74,6 +82,31 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         let resp = await lsClient?.sendRequest(GenTestRequest.type, {
             uri: lsClient.code2ProtocolConverter.asUri(uri),
             lineNumber: lineNumber,
+            isPytest: false,
+        });
+        traceLog(resp);
+        // Create a new untitled document
+        const doc = await vscode.workspace.openTextDocument({ language: 'python', content: resp });
+
+        // Open the document in a new tab
+        await vscode.window.showTextDocument(doc, { preview: false });
+    });
+    let genPytestCommand = vscode.commands.registerCommand('unittest_generator.gen_pytest', async () => {
+        const editor = vscode.window.activeTextEditor;
+        const position = editor?.selection.active;
+
+        // Set the line number of the current cursor position to the lineNumber variable
+        lineNumber = position?.line;
+        // Get the URI of the current document
+        uri = editor?.document.uri;
+        if (uri === undefined) {
+            vscode.window.showErrorMessage('No active text editor');
+            return;
+        }
+        let resp = await lsClient?.sendRequest(GenTestRequest.type, {
+            uri: lsClient.code2ProtocolConverter.asUri(uri),
+            lineNumber: lineNumber,
+            isPytest: true,
         });
         traceLog(resp);
         // Create a new untitled document
@@ -92,6 +125,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         }),
         disposable,
         genCommand,
+        genPytestCommand,
     );
 
     // Log Server information

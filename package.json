@@ -1,8 +1,8 @@
 {
-    "name": "unittest_generator",
+    "name": "unittest-generator",
     "displayName": "unittest_generator",
-    "description": "Template for unit test cases generator `unittest_generator`.",
-    "version": "2022.0.0-dev",
+    "description": "Template generator for unit test cases for fully types functions `unittest_generator`.",
+    "version": "2023.12.18",
     "preview": true,
     "serverInfo": {
         "name": "unittest_generator",
@@ -139,6 +139,11 @@
                 "title": "generate tests",
                 "category": "unittest_generator",
                 "command": "unittest_generator.gen"
+            },
+            {
+                "title": "generate tests for pytest",
+                "category": "unittest_generator",
+                "command": "unittest_generator.gen_pytest"
             }
         ]
     },

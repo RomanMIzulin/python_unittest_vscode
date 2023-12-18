@@ -42,7 +42,7 @@ import lsp_utils as utils
 import lsprotocol.types as lsp
 from pygls import server, uris, workspace
 import ast
-import unit_gen
+import unit_gen  # libs for generating 
 import importlib
 
 WORKSPACE_SETTINGS = {}
@@ -84,10 +84,9 @@ TOOL_ARGS = []  # default arguments always passed to your tool.
 @LSP_SERVER.feature('gen_back')
 def generate_test_template(params: lsp.ExecuteCommandParams) -> None | str:
     # need somehow to get doc or line with function with custom command 
-    params
-
     LSP_SERVER.send_notification(json.dumps(params))
-    document: workspace.Document = LSP_SERVER.workspace.get_document(params.uri)
+    is_for_pytest = params.isPytest
+    document: workspace.Document = LSP_SERVER.workspace.get_text_document(params.uri)
     # Assuming `doc` is a workspace.Document object
     file_path = document.uri  # replace with actual method to get file path
     line_number = params.lineNumber  # idk why it works
@@ -119,7 +118,7 @@ def generate_test_template(params: lsp.ExecuteCommandParams) -> None | str:
     
 
     # gen python object from file - callable func
-    res = unit_gen.generate_test_case(target_func)
+    res = unit_gen.generate_test_case(target_func,is_for_pytest)
     return res
     
 

@@ -1,5 +1,4 @@
-- How to proxy args from client to LSP for custom command?
-- How to get related text on which custom command was triggered?
+
 
 # Template for VS Code python tools extensions
 
